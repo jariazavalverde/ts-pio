@@ -1,7 +1,12 @@
 export interface IO<A> {
     runIO: () => Promise<A>;
+    map: <A, B>(this: IO<A>, f: (x: A) => B) => IO<B>;
     bind: <A, B>(this: IO<A>, f: (x: A) => IO<B>) => IO<B>;
     then: <A, B>(this: IO<A>, io: IO<B>) => IO<B>;
+};
+
+export interface Show {
+    toString: () => string;
 };
 
 export const IO = function<A>(this: IO<A>, runIO: () => Promise<A>) {
@@ -12,6 +17,11 @@ export const IO = function<A>(this: IO<A>, runIO: () => Promise<A>) {
 
 
 // MONADIC INTERFACE
+
+// Map the result of an IO action.
+IO.prototype.map = function<A, B>(this: IO<A>, f: (x: A) => B): IO<B> {
+    return new IO(() => this.runIO().then((x: A) => f(x)));
+};
 
 // Sequentially compose two IO actions, passing any value produced by the first
 // as an argument to the second.
@@ -43,6 +53,13 @@ export const putStrLn = function(text: string): IO<number> {
     return new IO(() => Deno.stdout.write(new TextEncoder().encode(text + "\n")));
 };
 
+// The print function outputs a value of any printable type to the standard
+// output device. Printable types are those that implement a toString method.
+// The print function converts values to strings for output and adds a newline.
+export const print = function(value: Show): IO<number> {
+    return putStrLn(value.toString());
+};
+
 
 // READ FROM STANDARD INPUT
 
@@ -50,6 +67,6 @@ export const putStrLn = function(text: string): IO<number> {
 export const getLine = new IO<string>(() => {
     const buf = new Uint8Array(1024);
     return Deno.stdin.read(buf).then(
-        (n: any) => new TextDecoder().decode(buf.subarray(0, n)).trim()
+        (n: number | null) => n ? new TextDecoder().decode(buf.subarray(0, n)).trim() : ""
     );
 });
