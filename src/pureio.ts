@@ -43,9 +43,35 @@ export const pure = function<A>(x: A): IO<A> {
 
 // COMBINATORS
 
+// Evaluate each IO action in the array from left to right, and collect the
+// results.
+export const sequence = function<A>(actions: Array<IO<A>>): IO<Array<A>> {
+    if(actions.length == 0)
+        return pure([]);
+    return new IO(() => {
+        const result: Array<A> = [];
+        let action = actions[0];
+        for(let i = 1; i < actions.length; i++) {
+            action = action.bind(x => {
+                result.push(x);
+                return actions[i];
+            });
+        }
+        return action.bind(x => {
+            result.push(x);
+            return pure(result);
+        }).runIO();
+    });
+};
+
 // Repeat an action indefinitely.
 export const forever = function<A>(action: IO<A>): IO<A> {
     return new IO(() => action.runIO().then(_x => forever(action).runIO()));
+};
+
+// Ignore the result of evaluation.
+export const ignore = function<A>(action: IO<A>): IO<void> {
+    return action.map(_x => {});
 };
 
 
