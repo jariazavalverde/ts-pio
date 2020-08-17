@@ -114,7 +114,7 @@ export const delay = function(ms: number): IO<void> {
 };
 
 
-// WRITE TO STANDARD OUTPUT
+// STANDARD INPUT/OUTPUT
 
 // Write a string to the standard output device.
 export const putStr = function(text: string): IO<number> {
@@ -133,9 +133,6 @@ export const print = function(value: Show): IO<number> {
     return putStrLn(value.toString());
 };
 
-
-// READ FROM STANDARD INPUT
-
 // Read a line from the standard input device.
 export const getLine = new IO<string>(() => {
     const buf = new Uint8Array(1024);
@@ -143,3 +140,25 @@ export const getLine = new IO<string>(() => {
         (n: number | null) => n ? new TextDecoder().decode(buf.subarray(0, n)).trim() : ""
     );
 });
+
+
+// FILES
+
+// Read a file and return the contents of the file as a string.
+export const readFile = function(path: string): IO<string> {
+    return new IO(() => Deno.readFile(path).then(
+        (content: BufferSource) => new TextDecoder('utf-8').decode(content)
+    ));
+};
+
+// Write the string to the file.
+export const writeFile = function(path: string): (content: string) => IO<void> {
+    return (content: string) =>
+        new IO(() => Deno.writeFile(path, new TextEncoder().encode(content), {append: false}));
+}
+
+// Append the string to the file.
+export const appendFile = function(path: string): (content: string) => IO<void> {
+    return (content: string) =>
+        new IO(() => Deno.writeFile(path, new TextEncoder().encode(content), {append: true}));
+}

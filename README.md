@@ -27,8 +27,8 @@ Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available 
 * [IO prototype](#IO-prototype)
 * [Combinators](#Combinators)
 * [Effects](#Effects)
-* [Write to standard output](#Write-to-standard-output)
-* [Read from standard input](#Read-from-standard-input)
+* [Standard input/output](#Standard-input-output)
+* [Files](#Files)
 
 ---
 
@@ -140,7 +140,7 @@ function(ms: number): IO<void>
 
 ---
 
-### Write to standard output
+### Standard input/output
 
 #### putStr
 
@@ -165,14 +165,42 @@ Output a value of any printable type to the standard output device. Printable ty
 function(value: Show): IO<number>
 ```
 
----
-
-### Read from standard input
-
 #### getLine
 
 Read a line from the standard input device.
 
 ```ts
 IO<string>
+```
+
+---
+
+### Files
+
+#### readFile
+
+Read a file and return the contents of the file as a string.
+
+*Example: [file.ts](examples/file.ts)*
+
+```ts
+function(path: string): IO<string>
+```
+
+#### writeFile
+
+Write the string to the file.
+
+*Example: [file.ts](examples/file.ts)*
+
+```ts
+function(path: string): (content: string) => IO<void>
+```
+
+#### appendFile
+
+Append the string to the file.
+
+```ts
+function(path: string): (content: string) => IO<void>
 ```
