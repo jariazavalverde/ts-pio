@@ -1,6 +1,7 @@
 export interface IO<A> {
     runIO: () => Promise<A>;
     map: <A, B>(this: IO<A>, f: (x: A) => B) => IO<B>;
+    ap: <A, B>(this: IO<(x: A) => B>, action: IO<A>) => IO<B>;
     bind: <A, B>(this: IO<A>, f: (x: A) => IO<B>) => IO<B>;
     then: <A, B>(this: IO<A>, action: IO<B>) => IO<B>;
 };
@@ -20,7 +21,16 @@ export const IO = function<A>(this: IO<A>, runIO: () => Promise<A>) {
 
 // Map the result of an IO action.
 IO.prototype.map = function<A, B>(this: IO<A>, f: (x: A) => B): IO<B> {
-    return new IO(() => this.runIO().then((x: A) => f(x)));
+    return new IO(() => this.runIO().then(x => f(x)));
+};
+
+// Sequential application.
+IO.prototype.ap = function<A, B>(this: IO<(x: A) => B>, action: IO<A>): IO<B> {
+    return new IO(() => this.runIO().then(
+        f => action.runIO().then(
+            x => f(x)
+        )
+    ));
 };
 
 // Sequentially compose two IO actions, passing any value produced by the first

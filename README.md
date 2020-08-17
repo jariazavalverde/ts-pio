@@ -42,6 +42,14 @@ Map the result of an IO action.
 function<A, B>(this: IO<A>, f: (x: A) => B): IO<B>
 ```
 
+#### IO.prototype.ap
+
+Sequential application.
+
+```ts
+function<A, B>(this: IO<(x: A) => B>, action: IO<A>): IO<B>
+```
+
 #### IO.prototype.bind
 
 Sequentially compose two IO actions, passing any value produced by the first as an argument to the second.
