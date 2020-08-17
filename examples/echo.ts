@@ -1,4 +1,4 @@
-import { forever, getLine, putStrLn } from "../src/pureio.ts";
+import { forever, getLine, putStrLn } from "../src/pio.ts";
 
 // echo = forever (getLine >>= putStrLn)
 const echo = forever(getLine.bind(putStrLn));

@@ -1,4 +1,4 @@
-import { getLine, print } from "../src/pureio.ts";
+import { getLine, print } from "../src/pio.ts";
 
 // showLength = fmap length getLine >>= print
 const length = (x: string) => x.length;

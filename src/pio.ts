@@ -26,7 +26,7 @@ IO.prototype.map = function<A, B>(this: IO<A>, f: (x: A) => B): IO<B> {
 // Sequentially compose two IO actions, passing any value produced by the first
 // as an argument to the second.
 IO.prototype.bind = function<A, B>(this: IO<A>, f: (x: A) => IO<B>): IO<B> {
-    return new IO(() => this.runIO().then((x: A) => f(x).runIO()));
+    return new IO(() => this.runIO().then(x => f(x).runIO()));
 };
 
 // Sequentially compose two IO actions, discarding any value produced by the
@@ -43,23 +43,37 @@ export const pure = function<A>(x: A): IO<A> {
 
 // COMBINATORS
 
+// Evaluate each IO action in the array in a non-blocking way, and collect the
+// results.
+export const all = function<A>(xs: Array<IO<A>>): IO<Array<A>> {
+    const actions = xs.slice();
+    return new IO(() => {
+        const promises: Array<Promise<A>> = [];
+        for(let i = 0; i < actions.length; i++) {
+            promises.push(actions[i].runIO());
+        }
+        return Promise.all(promises);
+    });
+};
+
 // Evaluate each IO action in the array from left to right, and collect the
 // results.
-export const sequence = function<A>(actions: Array<IO<A>>): IO<Array<A>> {
-    if(actions.length == 0)
-        return pure([]);
+export const sequence = function<A>(xs: Array<IO<A>>): IO<Array<A>> {
+    const actions = xs.slice();
     return new IO(() => {
-        const result: Array<A> = [];
+        const results: Array<A> = [];
+        if(actions.length == 0)
+            return pure(results).runIO();
         let action = actions[0];
         for(let i = 1; i < actions.length; i++) {
             action = action.bind(x => {
-                result.push(x);
+                results.push(x);
                 return actions[i];
             });
         }
         return action.bind(x => {
-            result.push(x);
-            return pure(result);
+            results.push(x);
+            return pure(results);
         }).runIO();
     });
 };
@@ -72,6 +86,16 @@ export const forever = function<A>(action: IO<A>): IO<A> {
 // Ignore the result of evaluation.
 export const ignore = function<A>(action: IO<A>): IO<void> {
     return action.map(_x => {});
+};
+
+
+// EFFECTS
+
+// Evaluate an IO action after a time.
+export const delay = function<A>(action: IO<A>): (ms: number) => IO<A> {
+    return (ms: number) => new IO(() => new Promise(
+        (resolve, _reject) => setTimeout(() => action.runIO().then(resolve), ms)
+    ));
 };
 
 
