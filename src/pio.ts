@@ -98,6 +98,11 @@ export const ignore = function<A>(action: IO<A>): IO<void> {
     return action.map(_x => {});
 };
 
+// Lift a binary function to IO actions.
+export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C> {
+    return pure(fn).ap(a).ap(b);
+};
+
 
 // EFFECTS
 

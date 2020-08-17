@@ -80,6 +80,8 @@ function<A>(x: A): IO<A>
 
 Evaluate each IO action in the array in a non-blocking way, and collect the results.
 
+*Example: [all-sequence.ts](examples/all-sequence.ts)*
+
 ```ts
 function<A>(xs: Array<IO<A>>): IO<Array<A>>
 ```
@@ -88,6 +90,8 @@ function<A>(xs: Array<IO<A>>): IO<Array<A>>
 
 Evaluate each IO action in the array from left to right, and collect the results.
 
+*Example: [all-sequence.ts](examples/all-sequence.ts)*
+
 ```ts
 function<A>(xs: Array<IO<A>>): IO<Array<A>>
 ```
@@ -95,6 +99,8 @@ function<A>(xs: Array<IO<A>>): IO<Array<A>>
 #### forever
 
 Repeat an action indefinitely.
+
+*Example: [echo.ts](examples/echo.ts)*
 
 ```ts
 function<A>(action: IO<A>): IO<A>
@@ -108,6 +114,16 @@ Ignore the result of evaluation.
 function<A>(action: IO<A>): IO<void>
 ```
 
+#### lift2
+
+Lift a binary function to IO actions.
+
+*Example: [add.ts](examples/add.ts)*
+
+```ts
+function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C>
+```
+
 ---
 
 ### Effects
@@ -115,6 +131,8 @@ function<A>(action: IO<A>): IO<void>
 #### delay
 
 Evaluate an IO action after a time (in milliseconds).
+
+*Example: [all-sequence.ts](examples/all-sequence.ts)*
 
 ```ts
 function<A>(action: IO<A>): (ms: number) => IO<A>
