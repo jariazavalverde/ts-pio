@@ -38,7 +38,7 @@ IO.prototype.then = function<A, B>(this: IO<A>, action: IO<B>): IO<B> {
 
 // COMBINATORS
 
-// Inject a value into a IO action.
+// Inject a value into an IO action.
 export const pure = function<A>(x: A): IO<A> {
     return new IO(() => new Promise((resolve, _reject) => resolve(x)));
 };

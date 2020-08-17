@@ -2,7 +2,7 @@
 
 ## A monadic library for I/O actions in TypeScript
 
-**pio.ts** allows you to handle all impure actions of your program, such as reading from standard input or writing to files, as a sequence of (pure) composable actions in a functional way.
+[pio.ts](https://github.com/jariazavalverde/ts-pio) allows you to handle all impure actions of your program, such as reading from standard input or writing to files, as a sequence of (pure) composable actions in a functional way.
 
 ```ts
 import { forever, getLine, putStrLn } from "../path/to/pio.ts";
@@ -16,11 +16,11 @@ echo.runIO();
 
 ## Downloads
 
-Source code of pio.ts is available on [GitHub](src). 
+Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available on [GitHub](src). 
 
 ## License
 
-pio.ts source code is released under the terms of the [BSD 3-Clause License](LICENSE).
+[pio.ts](https://github.com/jariazavalverde/ts-pio) source code is released under the terms of the [BSD 3-Clause License](LICENSE).
 
 ## Documentation
 
@@ -29,6 +29,8 @@ pio.ts source code is released under the terms of the [BSD 3-Clause License](LIC
 * [Effects](#Effects)
 * [Write to standard output](#Write-to-standard-output)
 * [Read from standard input](#Read-from-standard-input)
+
+---
 
 ### IO prototype
 
@@ -55,10 +57,12 @@ Sequentially compose two IO actions, discarding any value produced by the first.
 function<A, B>(this: IO<A>, action: IO<B>): IO<B>
 ```
 
+---
+
 ### Combinators
 
 #### pure
-Inject a value into a IO action.
+Inject a value into an IO action.
 
 ```ts
 function<A>(x: A): IO<A>
@@ -96,6 +100,8 @@ Ignore the result of evaluation.
 function<A>(action: IO<A>): IO<void>
 ```
 
+---
+
 ### Effects
 
 #### delay
@@ -105,6 +111,8 @@ Evaluate an IO action after a time (in milliseconds).
 ```ts
 function<A>(action: IO<A>): (ms: number) => IO<A>
 ```
+
+---
 
 ### Write to standard output
 
@@ -130,6 +138,8 @@ Output a value of any printable type to the standard output device. Printable ty
 ```ts
 function(value: Show): IO<number>
 ```
+
+---
 
 ### Read from standard input
 
