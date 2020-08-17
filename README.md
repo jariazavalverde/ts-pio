@@ -27,7 +27,7 @@ Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available 
 * [IO prototype](#IO-prototype)
 * [Combinators](#Combinators)
 * [Effects](#Effects)
-* [Standard input/output](#Standard-input-output)
+* [Standard input/output](#Standard-inputoutput)
 * [Files](#Files)
 
 ---
@@ -59,10 +59,21 @@ function<A, B>(this: IO<A>, f: (x: A) => IO<B>): IO<B>
 ```
 
 #### IO.prototype.then
+
 Sequentially compose two IO actions, discarding any value produced by the first.
 
 ```ts
 function<A, B>(this: IO<A>, action: IO<B>): IO<B>
+```
+
+#### IO.prototype.catch
+
+Execute another IO action when the main action fails. `IO` internally uses promises to cope with asynchronous tasks, so the handler of the `catch` method is called when: i) an exception is raised, or ii) a promise is rejected.
+
+*Example: [file.ts](examples/file.ts)*
+
+```ts
+function<A>(this: IO<A>, handler: (ex: any) => IO<A>): IO<A>
 ```
 
 ---

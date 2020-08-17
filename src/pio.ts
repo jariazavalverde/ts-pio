@@ -4,6 +4,7 @@ export interface IO<A> {
     ap: <A, B>(this: IO<(x: A) => B>, action: IO<A>) => IO<B>;
     bind: <A, B>(this: IO<A>, f: (x: A) => IO<B>) => IO<B>;
     then: <A, B>(this: IO<A>, action: IO<B>) => IO<B>;
+    catch: <A>(this: IO<A>, handler: (ex: any) => IO<A>) => IO<A>;
 };
 
 export interface Show {
@@ -43,6 +44,21 @@ IO.prototype.bind = function<A, B>(this: IO<A>, f: (x: A) => IO<B>): IO<B> {
 // first.
 IO.prototype.then = function<A, B>(this: IO<A>, action: IO<B>): IO<B> {
     return new IO(() => this.runIO().then((_x: A) => action.runIO()));
+};
+
+// Execute another IO action when the main action fails.
+// IO internally uses promises to cope with asynchronous tasks, so the handler
+// of the catch method is called when:
+//    i) an exception is raised, or
+//    ii) a promise is rejected.
+IO.prototype.catch = function<A>(this: IO<A>, handler: (ex: any) => IO<A>): IO<A> {
+    return new IO(() => {
+        try {
+            return this.runIO().catch(ex => handler(ex).runIO());
+        } catch(ex) {
+            return handler(ex).runIO();
+        }
+    });
 };
 
 
@@ -161,4 +177,4 @@ export const writeFile = function(path: string): (content: string) => IO<void> {
 export const appendFile = function(path: string): (content: string) => IO<void> {
     return (content: string) =>
         new IO(() => Deno.writeFile(path, new TextEncoder().encode(content), {append: true}));
-}
+};
