@@ -1,7 +1,7 @@
-import { getLine, putStrLn } from "../src/pureio.ts";
+import { forever, getLine, putStrLn } from "../src/pureio.ts";
 
-// echo = getLine >>= putStrLn
-const echo = getLine.bind(putStrLn);
+// echo = forever (getLine >>= putStrLn)
+const echo = forever(getLine.bind(putStrLn));
 
 // Run IO action
 echo.runIO();
