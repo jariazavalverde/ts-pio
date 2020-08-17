@@ -106,10 +106,10 @@ export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: I
 
 // EFFECTS
 
-// Evaluate an IO action after a time (in milliseconds).
-export const delay = function<A>(action: IO<A>): (ms: number) => IO<A> {
-    return (ms: number) => new IO(() => new Promise(
-        (resolve, _reject) => setTimeout(() => action.runIO().then(resolve), ms)
+// Delay the given milliseconds. 
+export const delay = function(ms: number): IO<void> {
+    return new IO(() => new Promise(
+        (resolve, _reject) => setTimeout(() => resolve(), ms)
     ));
 };
 

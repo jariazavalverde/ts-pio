@@ -1,15 +1,13 @@
-import { all, sequence, delay, pure, print } from "../src/pio.ts";
+import { all, sequence, delay, print } from "../src/pio.ts";
+
+const action = (x: number) => delay(10*x+2000).then(print(x));
 
 // Array of actions
-const actions = [
-    delay(pure(1))(1000).bind(print),
-    delay(pure(2))(1000).bind(print),
-    delay(pure(3))(1000).bind(print)
-];
+const actions = [action(1), action(2), action(3)];
 
 // all vs sequence
-const a = print("all").then(all(actions));
-const b = print("sequence").then(sequence(actions));
+const allActions = print("all").then(all(actions));
+const seqActions = print("sequence").then(sequence(actions));
 
 // Run IO action
-a.then(b).runIO();
+allActions.then(seqActions).runIO();

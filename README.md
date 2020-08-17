@@ -130,12 +130,12 @@ function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C>
 
 #### delay
 
-Evaluate an IO action after a time (in milliseconds).
+Delay the given milliseconds.
 
 *Example: [all-sequence.ts](examples/all-sequence.ts)*
 
 ```ts
-function<A>(action: IO<A>): (ms: number) => IO<A>
+function(ms: number): IO<void>
 ```
 
 ---
