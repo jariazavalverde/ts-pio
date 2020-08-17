@@ -35,13 +35,13 @@ IO.prototype.then = function<A, B>(this: IO<A>, action: IO<B>): IO<B> {
     return new IO(() => this.runIO().then((_x: A) => action.runIO()));
 };
 
+
+// COMBINATORS
+
 // Inject a value into a IO action.
 export const pure = function<A>(x: A): IO<A> {
     return new IO(() => new Promise((resolve, _reject) => resolve(x)));
 };
-
-
-// COMBINATORS
 
 // Evaluate each IO action in the array in a non-blocking way, and collect the
 // results.
@@ -91,7 +91,7 @@ export const ignore = function<A>(action: IO<A>): IO<void> {
 
 // EFFECTS
 
-// Evaluate an IO action after a time.
+// Evaluate an IO action after a time (in milliseconds).
 export const delay = function<A>(action: IO<A>): (ms: number) => IO<A> {
     return (ms: number) => new IO(() => new Promise(
         (resolve, _reject) => setTimeout(() => action.runIO().then(resolve), ms)
