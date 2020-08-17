@@ -25,16 +25,16 @@ Deno.test("Functor laws for IO actions", async () => {
     const f: (x: number) => number = x => x+1;
     const g: (x: number) => number = x => x*2;
 
-    // Functors must preserve identity morphisms
+    // Identity.
     // fmap id == id
     assertEquals(
         // fmap id
-        pure(1).map(id).runIO(),
+        await pure(1).map(id).runIO(),
         // id
-        id(pure(1)).runIO()
+        await id(pure(1)).runIO()
     );
 
-    // Functors must preserve composition of morphisms
+    // Composition.
     // fmap (g . f)  ==  fmap f . fmap g
     assertEquals(
         // fmap (g . f)
@@ -53,9 +53,9 @@ Deno.test("Applicative laws for IO actions", async () => {
     const u: IO<(x: number) => number> = pure(f);
     const v: IO<(x: number) => number> = pure(g);
     const w: IO<number> = pure(1);
-    const y:number = 1;
+    const y: number = 1;
     
-    // Identity
+    // Identity.
     // pure id <*> w = w
     assertEquals(
         // pure id <*> w
@@ -64,7 +64,7 @@ Deno.test("Applicative laws for IO actions", async () => {
         await id(w).runIO()
     );
 
-    // Homomorphism
+    // Homomorphism.
     // pure f <*> pure y = pure (f y)
     assertEquals(
         // pure f <*> pure y
@@ -73,7 +73,7 @@ Deno.test("Applicative laws for IO actions", async () => {
         await pure(f(y)).runIO()
     );
 
-    // Composition
+    // Composition.
     // pure (.) <*> u <*> v <*> w = u <*> (v <*> w)
     assertEquals(
         // pure (.) <*> u <*> v <*> w
@@ -82,13 +82,50 @@ Deno.test("Applicative laws for IO actions", async () => {
         await u.ap(v.ap(w)).runIO()
     );
 
-    // Interchange
+    // Interchange.
     // u <*> pure y = pure ($ y) <*> u
     assertEquals(
         // u <*> pure y
         await u.ap(pure(y)).runIO(),
         // pure ($ y) <*> u
         await pure(apply(y)).ap(u).runIO()
+    );
+
+});
+
+// Monad laws for IO actions.
+Deno.test("Monad laws for IO actions", async () => {
+
+    const f: (x: number) => IO<number> = x => pure(x+1);
+    const g: (x: number) => IO<number> = x => pure(x*2);
+    const m: IO<number> = pure(1);
+    const y: number = 1;
+
+    // Left identity.
+    // pure y >>= f = f y
+    assertEquals(
+        // pure y >>= f
+        await pure(y).bind(f).runIO(),
+        // f y
+        await f(y).runIO()
+    );
+
+    // Right identity.
+    // m >>= pure = m
+    assertEquals(
+        // m >>= pure
+        await m.bind(pure).runIO(),
+        // m
+        await m.runIO()
+    );
+
+    // Associativity.
+    // (m >>= f) >>= g = m >>= (\x -> f x >>= g)
+    assertEquals(
+        // (m >>= f) >>= g
+        await m.bind(f).bind(g).runIO(),
+        // m >>= (\x -> f x >>= g)
+        await m.bind((x: number) => f(x).bind(g)).runIO()
     );
 
 });
