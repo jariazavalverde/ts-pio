@@ -66,6 +66,14 @@ Sequentially compose two IO actions, discarding any value produced by the first.
 function<A, B>(this: IO<A>, action: IO<B>): IO<B>
 ```
 
+#### IO.prototype.left
+
+Sequentially compose two IO actions, discarding any value produced by the second.
+
+```ts
+function<A, B>(this: IO<A>, action: IO<B>): IO<A>
+```
+
 #### IO.prototype.catch
 
 Execute another IO action when the main action fails. `IO` internally uses promises to cope with asynchronous tasks, so the handler of the `catch` method is called when: i) an exception is raised, or ii) a promise is rejected.
@@ -178,7 +186,7 @@ function(value: Show): IO<number>
 
 #### getChar
 
-Read a character from the standard input device. This makes use of `Deno.setRaw` which is still unstable so the library require the `--unstable` flag to run.
+Read a character from the standard input device. This makes use of `Deno.setRaw` which is still unstable so the library requires the `--unstable` flag to run.
 
 *Example: [password.ts](examples/password.ts)*
 

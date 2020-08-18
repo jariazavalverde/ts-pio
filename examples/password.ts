@@ -1,4 +1,4 @@
-import { IO, putStr, putStrLn, print, getChar, pure, lift2 } from "../src/pio.ts";
+import { IO, putStr, putStrLn, getChar, pure, lift2 } from "../src/pio.ts";
 
 const cat = (x: string) => (y: string) => x+y;
 
@@ -9,9 +9,10 @@ const password: () => IO<string> = () =>
         : putStr("*").then(lift2(cat, pure(x), password())));
 
 // Ask for a password
-const askPassword = putStr("Enter a password: ").then(password()).map(
-    password => "Your password is: " + password
-).bind(putStrLn);
+const askPassword = putStr("Enter a password: ")
+    .then(password())
+    .left(putStr("Your password is: "))
+    .bind(putStrLn);
 
 // Run IO action
 askPassword.runIO();

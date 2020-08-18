@@ -4,6 +4,7 @@ export interface IO<A> {
     ap: <A, B>(this: IO<(x: A) => B>, action: IO<A>) => IO<B>;
     bind: <A, B>(this: IO<A>, f: (x: A) => IO<B>) => IO<B>;
     then: <A, B>(this: IO<A>, action: IO<B>) => IO<B>;
+    left: <A, B>(this: IO<A>, action: IO<B>) => IO<A>;
     catch: <A>(this: IO<A>, handler: (ex: any) => IO<A>) => IO<A>;
 };
 
@@ -44,6 +45,12 @@ IO.prototype.bind = function<A, B>(this: IO<A>, f: (x: A) => IO<B>): IO<B> {
 // first.
 IO.prototype.then = function<A, B>(this: IO<A>, action: IO<B>): IO<B> {
     return new IO(() => this.runIO().then((_x: A) => action.runIO()));
+};
+
+// Sequentially compose two IO actions, discarding any value produced by the
+// second.
+IO.prototype.left = function<A, B>(this: IO<A>, action: IO<B>): IO<A> {
+    return new IO(() => this.runIO().then((x: A) => action.then(pure(x)).runIO()));
 };
 
 // Execute another IO action when the main action fails.
@@ -151,7 +158,7 @@ export const print = function(value: Show): IO<number> {
 
 // Read a character from the standard input device.
 // This makes use of Deno.setRaw which is still unstable so the library
-// require the --unstable flag to run.
+// requires the --unstable flag to run.
 export const getChar = new IO<string>(() => {
     const buffer = new Uint8Array(1);
     Deno.setRaw(0, true);
