@@ -176,6 +176,16 @@ Output a value of any printable type to the standard output device. Printable ty
 function(value: Show): IO<number>
 ```
 
+#### getChar
+
+Read a character from the standard input device. This makes use of `Deno.setRaw` which is still unstable so the library require the `--unstable` flag to run.
+
+*Example: [password.ts](examples/password.ts)*
+
+```ts
+IO<string>
+```
+
 #### getLine
 
 Read a line from the standard input device.

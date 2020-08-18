@@ -149,11 +149,24 @@ export const print = function(value: Show): IO<number> {
     return putStrLn(value.toString());
 };
 
+// Read a character from the standard input device.
+// This makes use of Deno.setRaw which is still unstable so the library
+// require the --unstable flag to run.
+export const getChar = new IO<string>(() => {
+    const buffer = new Uint8Array(1);
+    Deno.setRaw(0, true);
+    return Deno.stdin.read(buffer).then(
+        (n: number | null) => n ? new TextDecoder().decode(buffer.subarray(0, 1)) : ""
+    ).finally(
+        () => Deno.setRaw(0, false)
+    );
+});
+
 // Read a line from the standard input device.
 export const getLine = new IO<string>(() => {
-    const buf = new Uint8Array(1024);
-    return Deno.stdin.read(buf).then(
-        (n: number | null) => n ? new TextDecoder().decode(buf.subarray(0, n)).trim() : ""
+    const buffer = new Uint8Array(1024);
+    return Deno.stdin.read(buffer).then(
+        (n: number | null) => n ? new TextDecoder().decode(buffer.subarray(0, n)) : ""
     );
 });
 
