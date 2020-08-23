@@ -134,6 +134,16 @@ Ignore the result of evaluation.
 function<A>(action: IO<A>): IO<void>
 ```
 
+#### filter
+
+Array-based filter function for IO actions.
+
+*Example: [filter.ts](examples/filter.ts)*
+
+```ts
+function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<A>) => IO<Array<A>>;
+```
+
 #### lift2
 
 Lift a binary function to IO actions.
@@ -159,6 +169,8 @@ function(cond: boolean): IO<void>;
 #### when
 
 Conditional execution of an IO action.
+
+*Example: [conditional.ts](examples/conditional.ts)*
 
 ```ts
 function(action: IO<void>): (cond: boolean) => IO<void>;

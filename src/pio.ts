@@ -121,6 +121,17 @@ export const ignore = function<A>(action: IO<A>): IO<void> {
     return action.map(_x => {});
 };
 
+// Array-based filter function for IO actions.
+export const filter = function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<A>) => IO<Array<A>> {
+    return xs => {
+        let action: IO<Array<A>> = pure([]);
+        for(let i = xs.length-1; i >= 0; i--) {
+            action = lift2(flag => acc => flag ? [xs[i]].concat(acc) : acc, predicate(xs[i]), action);
+        }
+        return action;
+    };
+};
+
 // Lift a binary function to IO actions.
 export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C> {
     return pure(fn).ap(a).ap(b);
