@@ -141,7 +141,7 @@ Perform the action n times, gathering the results.
 *Example: [replicate.ts](examples/replicate.ts)*
 
 ```ts
-function<A>(action: IO<A>): (n: number) => IO<Array<A>>;
+function<A>(action: IO<A>): (n: number) => IO<Array<A>>
 ```
 
 #### forever
@@ -161,7 +161,7 @@ Array-based filter function for IO actions.
 *Example: [filter.ts](examples/filter.ts)*
 
 ```ts
-function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<A>) => IO<Array<A>>;
+function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<A>) => IO<Array<A>>
 ```
 
 ---
@@ -183,7 +183,7 @@ function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C>
 Lift a ternary function to IO actions.
 
 ```ts
-function<A, B, C, D>(fn: (x: A) => (y: B) => (z: C) => D, a: IO<A>, b: IO<B>, c: IO<C>): IO<D>;
+function<A, B, C, D>(fn: (x: A) => (y: B) => (z: C) => D, a: IO<A>, b: IO<B>, c: IO<C>): IO<D>
 ```
 
 ---
@@ -195,7 +195,7 @@ function<A, B, C, D>(fn: (x: A) => (y: B) => (z: C) => D, a: IO<A>, b: IO<B>, c:
 Conditional failure of an IO action. 
 
 ```ts
-function(cond: boolean): IO<void>;
+function(cond: boolean): IO<void>
 ```
 
 #### when
@@ -205,7 +205,7 @@ Conditional execution of an IO action.
 *Example: [conditional.ts](examples/conditional.ts)*
 
 ```ts
-function(action: IO<void>): (cond: boolean) => IO<void>;
+function(action: IO<void>): (cond: boolean) => IO<void>
 ```
 
 #### unless
@@ -213,7 +213,7 @@ function(action: IO<void>): (cond: boolean) => IO<void>;
 The reverse of [when](#when).
 
 ```ts
-function(action: IO<void>): (cond: boolean) => IO<void>;
+function(action: IO<void>): (cond: boolean) => IO<void>
 ```
 
 ---
