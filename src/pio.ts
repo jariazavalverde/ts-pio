@@ -127,6 +127,28 @@ export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: I
 };
 
 
+// CONDITIONAL EXECUTION
+
+// Conditional failure of an IO action. 
+export const guard = function(cond: boolean): IO<void> {
+    return cond ? pure(undefined) : new IO<void>(
+        () => new Promise((_resolve, _reject) => {
+            throw "IO error";
+        })
+    );
+};
+
+// Conditional execution of an IO action.
+export const when = function(action: IO<void>): (cond: boolean) => IO<void> {
+    return cond => cond ? action : pure(undefined);
+};
+
+// The reverse of when.
+export const unless = function(action: IO<void>): (cond: boolean) => IO<void> {
+    return cond => cond ? pure(undefined) : action;
+};
+
+
 // EFFECTS
 
 // Delay the given milliseconds. 
@@ -140,19 +162,23 @@ export const delay = function(ms: number): IO<void> {
 // STANDARD INPUT/OUTPUT
 
 // Write a string to the standard output device.
-export const putStr = function(text: string): IO<number> {
-    return new IO(() => Deno.stdout.write(new TextEncoder().encode(text)));
+export const putStr = function(text: string): IO<void> {
+    return ignore(
+        new IO(() => Deno.stdout.write(new TextEncoder().encode(text)))
+    );
 };
 
 // The same as putStr, but adds a newline character.
-export const putStrLn = function(text: string): IO<number> {
-    return new IO(() => Deno.stdout.write(new TextEncoder().encode(text + "\n")));
+export const putStrLn = function(text: string): IO<void> {
+    return ignore(
+        new IO(() => Deno.stdout.write(new TextEncoder().encode(text + "\n")))
+    );
 };
 
 // Output a value of any printable type to the standard output device.
 // Printable types are those that implement a toString method.
 // The print function converts values to strings for output and adds a newline.
-export const print = function(value: Show): IO<number> {
+export const print = function(value: Show): IO<void> {
     return putStrLn(value.toString());
 };
 

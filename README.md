@@ -26,6 +26,7 @@ Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available 
 
 * [IO prototype](#IO-prototype)
 * [Combinators](#Combinators)
+* [Conditional execution](#Conditional-execution)
 * [Effects](#Effects)
 * [Standard input/output](#Standard-inputoutput)
 * [Files](#Files)
@@ -145,6 +146,34 @@ function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C>
 
 ---
 
+### Conditional execution
+
+#### guard
+
+Conditional failure of an IO action. 
+
+```ts
+function(cond: boolean): IO<void>;
+```
+
+#### when
+
+Conditional execution of an IO action.
+
+```ts
+function(action: IO<void>): (cond: boolean) => IO<void>;
+```
+
+#### unless
+
+The reverse of [when](#when).
+
+```ts
+function(action: IO<void>): (cond: boolean) => IO<void>;
+```
+
+---
+
 ### Effects
 
 #### delay
@@ -165,7 +194,7 @@ function(ms: number): IO<void>
 
 Write a string to the standard output device.
 ```ts
-function(text: string): IO<number>
+function(text: string): IO<void>
 ```
 
 #### putStrLn
@@ -173,7 +202,7 @@ function(text: string): IO<number>
 The same as `putStr`, but adds a newline character.
 
 ```ts
-function(text: string): IO<number>
+function(text: string): IO<void>
 ```
 
 #### print
@@ -181,7 +210,7 @@ function(text: string): IO<number>
 Output a value of any printable type to the standard output device. Printable types are those that implement a `toString` method. The print function converts values to strings for output and adds a newline.
 
 ```ts
-function(value: Show): IO<number>
+function(value: Show): IO<void>
 ```
 
 #### getChar
