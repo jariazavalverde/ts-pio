@@ -8,7 +8,7 @@
 [pio.ts](https://github.com/jariazavalverde/ts-pio) allows you to handle all impure actions of your program, such as reading from standard input or writing to files, as a sequence of (pure) composable actions in a functional way.
 
 ```ts
-import { forever, getLine, putStrLn } from "https://deno.land/x/pio/mod.ts";
+import { forever, getLine, putStrLn } from "https://deno.land/x/pio/pio.ts";
 
 // echo = forever (getLine >>= putStrLn)
 const echo = forever(getLine.bind(putStrLn));
@@ -24,7 +24,7 @@ echo.runIO();
 Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available on [GitHub](src). You can import the most recent version released from:
 
 ```
-https://deno.land/x/pio/mod.ts
+https://deno.land/x/pio@v1.0.0/pio.ts
 ```
 
 ## License
