@@ -5,7 +5,7 @@
 [pio.ts](https://github.com/jariazavalverde/ts-pio) allows you to handle all impure actions of your program, such as reading from standard input or writing to files, as a sequence of (pure) composable actions in a functional way.
 
 ```ts
-import { forever, getLine, putStrLn } from "../path/to/pio.ts";
+import { forever, getLine, putStrLn } from "https://deno.land/x/pio@1.0.0/mod.ts";
 
 // echo = forever (getLine >>= putStrLn)
 const echo = forever(getLine.bind(putStrLn));
@@ -14,9 +14,15 @@ const echo = forever(getLine.bind(putStrLn));
 echo.runIO();
 ```
 
+**Note:** *Some IO actions defined by [pio.ts](https://github.com/jariazavalverde/ts-pio) (like [getChar](#getChar)) make use of `Deno.setRaw` which is still unstable, so the library requires the `--unstable` flag to run.*
+
 ## Downloads
 
-Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available on [GitHub](src). 
+Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available on [GitHub](src). You can import the most recent version released from:
+
+```
+https://deno.land/x/pio@1.0.0/mod.ts
+```
 
 ## License
 
@@ -86,6 +92,14 @@ Execute another IO action when the main action fails. `IO` internally uses promi
 function<A>(this: IO<A>, handler: (ex: any) => IO<A>): IO<A>
 ```
 
+#### void
+
+Ignore the result of evaluation.
+
+```ts
+function<A>(this: IO<A>): IO<void>
+```
+
 ---
 
 ### Combinators
@@ -135,14 +149,6 @@ Repeat an action indefinitely.
 
 ```ts
 function<A>(action: IO<A>): IO<A>
-```
-
-#### ignore
-
-Ignore the result of evaluation.
-
-```ts
-function<A>(action: IO<A>): IO<void>
 ```
 
 #### filter
@@ -234,7 +240,7 @@ function(text: string): IO<void>
 
 #### putStrLn
 
-The same as `putStr`, but adds a newline character.
+The same as [putStr](#putStr), but adds a newline character.
 
 ```ts
 function(text: string): IO<void>
@@ -293,6 +299,8 @@ function(path: string): (content: string) => IO<void>
 #### appendFile
 
 Append the string to the file.
+
+*Example: [file.ts](examples/file.ts)*
 
 ```ts
 function(path: string): (content: string) => IO<void>

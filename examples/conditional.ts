@@ -5,7 +5,7 @@ const getBool: IO<boolean> = getLine.map((x: string) => x.trim() === "yes");
 
 // cond = putStr "Enter yes/no: " >> getBool >>= flip when (putStrLn "done!")
 const cond: IO<void> = putStr("Enter yes/no: ").then(
-    getBool.bind(when(putStrLn("done!")))
+  getBool.bind(when(putStrLn("done!"))),
 );
 
 // Run IO action
