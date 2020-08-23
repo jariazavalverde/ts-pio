@@ -1,3 +1,6 @@
+[![license](https://img.shields.io/github/license/jariazavalverde/ts-pio)](https://github.com/jariazavalverde/ts-pio/blob/master/LICENSE)
+[![version](https://img.shields.io/github/v/tag/jariazavalverde/ts-pio?label=version)](https://github.com/jariazavalverde/ts-pio)
+
 # pio.ts
 
 ## A monadic library for I/O actions in TypeScript
@@ -5,7 +8,7 @@
 [pio.ts](https://github.com/jariazavalverde/ts-pio) allows you to handle all impure actions of your program, such as reading from standard input or writing to files, as a sequence of (pure) composable actions in a functional way.
 
 ```ts
-import { forever, getLine, putStrLn } from "https://deno.land/x/pio@1.0.0/mod.ts";
+import { forever, getLine, putStrLn } from "https://deno.land/x/pio/mod.ts";
 
 // echo = forever (getLine >>= putStrLn)
 const echo = forever(getLine.bind(putStrLn));
@@ -21,7 +24,7 @@ echo.runIO();
 Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available on [GitHub](src). You can import the most recent version released from:
 
 ```
-https://deno.land/x/pio@1.0.0/mod.ts
+https://deno.land/x/pio/mod.ts
 ```
 
 ## License
@@ -92,7 +95,7 @@ Execute another IO action when the main action fails. `IO` internally uses promi
 function<A>(this: IO<A>, handler: (ex: any) => IO<A>): IO<A>
 ```
 
-#### void
+#### IO.prototype.void
 
 Ignore the result of evaluation.
 
