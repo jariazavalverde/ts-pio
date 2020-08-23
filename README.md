@@ -26,6 +26,7 @@ Source code of [pio.ts](https://github.com/jariazavalverde/ts-pio) is available 
 
 * [IO prototype](#IO-prototype)
 * [Combinators](#Combinators)
+* [Lifting operators](#Lifting-operators)
 * [Conditional execution](#Conditional-execution)
 * [Effects](#Effects)
 * [Standard input/output](#Standard-inputoutput)
@@ -120,6 +121,8 @@ function<A>(xs: Array<IO<A>>): IO<Array<A>>
 
 Perform the action n times, gathering the results.
 
+*Example: [replicate.ts](examples/replicate.ts)*
+
 ```ts
 function<A>(action: IO<A>): (n: number) => IO<Array<A>>;
 ```
@@ -152,6 +155,10 @@ Array-based filter function for IO actions.
 function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<A>) => IO<Array<A>>;
 ```
 
+---
+
+### Lifting operators
+
 #### lift2
 
 Lift a binary function to IO actions.
@@ -160,6 +167,14 @@ Lift a binary function to IO actions.
 
 ```ts
 function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C>
+```
+
+#### lift3
+
+Lift a ternary function to IO actions.
+
+```ts
+function<A, B, C, D>(fn: (x: A) => (y: B) => (z: C) => D, a: IO<A>, b: IO<B>, c: IO<C>): IO<D>;
 ```
 
 ---

@@ -132,11 +132,6 @@ export const filter = function<A>(predicate: (x: A) => IO<boolean>): (xs: Array<
     };
 };
 
-// Lift a binary function to IO actions.
-export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C> {
-    return pure(fn).ap(a).ap(b);
-};
-
 // Perform the action n times, gathering the results.
 export const replicate = function<A>(action: IO<A>): (n: number) => IO<Array<A>> {
     return n => {
@@ -145,6 +140,19 @@ export const replicate = function<A>(action: IO<A>): (n: number) => IO<Array<A>>
             actions.push(action);
         return sequence(actions);
     }
+};
+
+
+// LIFTING OPERATORS
+
+// Lift a binary function to IO actions.
+export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: IO<B>): IO<C> {
+    return pure(fn).ap(a).ap(b);
+};
+
+// Lift a ternary function to IO actions.
+export const lift3 = function<A, B, C, D>(fn: (x: A) => (y: B) => (z: C) => D, a: IO<A>, b: IO<B>, c: IO<C>): IO<D> {
+    return pure(fn).ap(a).ap(b).ap(c);
 };
 
 
