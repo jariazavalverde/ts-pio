@@ -116,6 +116,14 @@ Evaluate each IO action in the array from left to right, and collect the results
 function<A>(xs: Array<IO<A>>): IO<Array<A>>
 ```
 
+#### replicate
+
+Perform the action n times, gathering the results.
+
+```ts
+function<A>(action: IO<A>): (n: number) => IO<Array<A>>;
+```
+
 #### forever
 
 Repeat an action indefinitely.

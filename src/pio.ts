@@ -137,6 +137,16 @@ export const lift2 = function<A, B, C>(fn: (x: A) => (y: B) => C, a: IO<A>, b: I
     return pure(fn).ap(a).ap(b);
 };
 
+// Perform the action n times, gathering the results.
+export const replicate = function<A>(action: IO<A>): (n: number) => IO<Array<A>> {
+    return n => {
+        let actions = [];
+        for(let i = 0; i < n; i++)
+            actions.push(action);
+        return sequence(actions);
+    }
+};
+
 
 // CONDITIONAL EXECUTION
 
